@@ -41,6 +41,17 @@ public class TeamSavedData extends WorldSavedData {
         return teams.get(id);
     }
 
+    public void addTeam(Team team) {
+        teams.put(team.getId(), team);
+        this.setDirty(true);
+    }
+
+    public void removeTeam(Team team) {
+        teams.remove(team.getId());
+        this.setDirty(true);
+
+    }
+
 
     // to list
     @Override
@@ -72,6 +83,8 @@ public class TeamSavedData extends WorldSavedData {
         teams.forEach((id, team) -> {
 
             CompoundNBT teamNBT = new CompoundNBT();
+            teamNBT.putString("demonslayer.id", team.getId());
+
             ListNBT players = new ListNBT();
 
             for (UUID player: team.getPlayers()) {
@@ -87,7 +100,7 @@ public class TeamSavedData extends WorldSavedData {
             for (Item item: team.getBannedItems()) {
 
                 CompoundNBT itemNBT = new CompoundNBT();
-                itemNBT.putString("demonslayer.item", item.getRegistryName().getPath());
+                itemNBT.putString("demonslayer.item", item.getRegistryName().toString());
                 bannedItems.add(itemNBT)  ;
             }
 

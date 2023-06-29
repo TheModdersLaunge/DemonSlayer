@@ -5,6 +5,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.UUID;
 
 public class Team {
@@ -22,6 +23,12 @@ public class Team {
         return players.contains(p.getUniqueID());
     }
 
+    public boolean playersIn(Collection<? extends PlayerEntity> p) {
+        ArrayList<UUID> list = new ArrayList<UUID>();
+        p.forEach((player) -> list.add(player.getUniqueID()));
+
+        return players.containsAll(list);
+    }
     public boolean itemBanned(Item item) {
         return bannedItems.contains(item);
     }
@@ -32,6 +39,14 @@ public class Team {
 
     public void addPlayer(UUID p) {
         players.add(p);
+    }
+
+    public void removePlayer(UUID p) {
+        players.remove(p);
+    }
+
+    public void removePlayer(PlayerEntity p) {
+        players.remove(p.getUniqueID());
     }
 
     public void addItem(Item item) {
