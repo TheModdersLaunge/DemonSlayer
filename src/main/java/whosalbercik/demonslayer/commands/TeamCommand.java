@@ -14,6 +14,7 @@ import net.minecraft.util.text.Color;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.Style;
 import net.minecraft.util.text.TextFormatting;
+import org.lwjgl.system.CallbackI;
 import whosalbercik.demonslayer.object.Team;
 import whosalbercik.demonslayer.saveddata.TeamSavedData;
 
@@ -23,6 +24,7 @@ import java.util.UUID;
 public class TeamCommand {
     public static void register(CommandDispatcher<CommandSource> stack) {
         stack.register(Commands.literal("teams")
+                        .executes(TeamCommand::teams)
 
                 .then(Commands.literal("create")
                         .then(Commands.argument("id", StringArgumentType.word())
@@ -57,6 +59,21 @@ public class TeamCommand {
                 .then(Commands.literal("banneditems")
                         .then(Commands.argument("team", StringArgumentType.word())
                                 .executes(TeamCommand::bannedItems))));
+    }
+
+    private static int teams(CommandContext<CommandSource> ctx) {
+        TeamSavedData data = TeamSavedData.get(ctx.getSource().getWorld());
+
+        if (data.getTeams().isEmpty()) {
+            ctx.getSource().sendErrorMessage(new StringTextComponent("No teams found!"));
+            return 0;
+        }
+
+        for (Team team: data.getTeams()) {
+            ctx.getSource().sendFeedback(new StringTextComponent(String.format("TEAM: %s", team.getId())), false);
+        }
+
+        return 0;
     }
 
     private static int bannedItems(CommandContext<CommandSource> ctx) {
